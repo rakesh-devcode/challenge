@@ -7,9 +7,10 @@ def print_file(dir_path):
         for file in files:
             formatted_path = path.replace("\\","/")
             file_path = formatted_path + '/' + file
-
+            filename = os.path.basename(__file__)
+            scriptfile_path = formatted_path + '/' + filename
             # To avoid the current script includes in output
-            if file_path != __file__:
+            if file_path != scriptfile_path:
                 with open(file_path, 'r') as openfile:
                     lines = openfile.readlines()
                     for line in lines:
