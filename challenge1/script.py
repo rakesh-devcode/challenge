@@ -14,7 +14,7 @@ def print_file(dir_path):
                     lines = openfile.readlines()
                     for line in lines:
                         if "TODO" in line:
-                            out_file_path = os.path.abspath(file)
+                            out_file_path = file_path
                             print(out_file_path)
 
 
