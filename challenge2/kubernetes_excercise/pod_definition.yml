@@ -1,0 +1,54 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: "2020-01-24T07:04:49Z"
+    labels:
+      component: apiserver
+      provider: kubernetes
+    name: kubernetes
+    namespace: default
+    resourceVersion: "145"
+    selfLink: /api/v1/namespaces/default/services/kubernetes
+    uid: 4eb7908f-5b04-402f-8207-57c68e2b418c
+  spec:
+    clusterIP: 100.64.0.1
+    ports:
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 443
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: "2020-01-24T07:09:16Z"
+    labels:
+      run: sample-nginx
+    name: sample-nginx
+    namespace: default
+    resourceVersion: "773"
+    selfLink: /api/v1/namespaces/default/services/sample-nginx
+    uid: e6b2f355-8d25-4c6f-a00f-9c0e679dab85
+  spec:
+    clusterIP: 100.66.246.165
+    externalTrafficPolicy: Cluster
+    ports:
+    - nodePort: 30717
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      run: sample-nginx
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer: {}
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""
