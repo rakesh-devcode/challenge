@@ -3,18 +3,28 @@ Refreshing Terraform state in-memory prior to plan...
 The refreshed state will be used to calculate this plan, but will not be
 persisted to local or remote state storage.
 
+aws_key_pair.default: Refreshing state... [id=kp_devops]
+aws_subnet.private-subnet: Refreshing state... [id=subnet-0460351d3cc7d5503]
+aws_vpc.default: Refreshing state... [id=vpc-044b913d299d9e386]
+aws_internet_gateway.gw: Refreshing state... [id=igw-0956bbad493fbfacb]
+aws_subnet.public-subnet: Refreshing state... [id=subnet-0b64fe9e20825029c]
+aws_security_group.sgweb: Refreshing state... [id=sg-0a4c0b29b68b4d1a1]
+aws_route_table.web-public-rt: Refreshing state... [id=rtb-0879a66f671739bfb]
+aws_instance.wb: Refreshing state... [id=i-037fa9e2f7b25cb3a]
+aws_route_table_association.web-public-rt: Refreshing state... [id=rtbassoc-09bca0042888d4923]
 
 ------------------------------------------------------------------------
 
 An execution plan has been generated and is shown below.
 Resource actions are indicated with the following symbols:
   + create
+-/+ destroy and then create replacement
 
 Terraform will perform the following actions:
 
   # aws_instance.wb will be created
   + resource "aws_instance" "wb" {
-      + ami                          = "ami-0d9233e8ce73df7b2"
+      + ami                          = "ami-062f7200baf2fa504"
       + arn                          = (known after apply)
       + associate_public_ip_address  = true
       + availability_zone            = (known after apply)
@@ -24,10 +34,10 @@ Terraform will perform the following actions:
       + host_id                      = (known after apply)
       + id                           = (known after apply)
       + instance_state               = (known after apply)
-      + instance_type                = "t1.micro"
+      + instance_type                = "t2.micro"
       + ipv6_address_count           = (known after apply)
       + ipv6_addresses               = (known after apply)
-      + key_name                     = (known after apply)
+      + key_name                     = "kp_devops"
       + network_interface_id         = (known after apply)
       + password_data                = (known after apply)
       + placement_group              = (known after apply)
@@ -37,13 +47,13 @@ Terraform will perform the following actions:
       + public_dns                   = (known after apply)
       + public_ip                    = (known after apply)
       + security_groups              = (known after apply)
-      + source_dest_check            = false
+      + source_dest_check            = true
       + subnet_id                    = (known after apply)
       + tags                         = {
           + "Name" = "ec2_devops"
         }
       + tenancy                      = (known after apply)
-      + user_data                    = "72bc03f56a2477922ca5fd2e9aef56f7298725ec"
+      + user_data                    = "c9138e1cc65e979e86a759d0b3116584fb6bf94b"
       + volume_tags                  = (known after apply)
       + vpc_security_group_ids       = (known after apply)
 
@@ -92,24 +102,6 @@ Terraform will perform the following actions:
       + vpc_id   = (known after apply)
     }
 
-  # aws_key_pair.default will be created
-  + resource "aws_key_pair" "default" {
-      + fingerprint = (known after apply)
-      + id          = (known after apply)
-      + key_name    = "kp_devops"
-      + public_key  = <<~EOT
-            ---- BEGIN SSH2 PUBLIC KEY ----
-            Comment: "imported-openssh-key"
-            AAAAB3NzaC1yc2EAAAADAQABAAABAQCLuaxP3swU34A15WGw6EJHkU7bi57fYjsM
-            AZF3yAYaFwbWZVigI2rnhqnhsPs7IfUK9Ku5FRgHIQXsJ48n1BTlsMdY45w48se7
-            f8gpYACN9mseJNj0kAyBHzm8kVVK2B52tBNUSJB/jZb4d9lpGB7Mvf2N3KJbUTp5
-            o0hhcUzZJtoyTyTHRtLN5iPXXr4vBRU9keBwSi1BZbq73uHEZC6Jiwr9vbF63FSK
-            5obS7B68PaX6C2D2zyH+rECC9fuISHr5BCxlX7TgA1cGUeIL6mAteaJwSbOFCRyq
-            /SQyBbXfn4hHzU/WKuQ6Y3/1OHtH53XGVYLOdJ9GUERPu4CGgQa3
-            ---- END SSH2 PUBLIC KEY ----
-        EOT
-    }
-
   # aws_route_table.web-public-rt will be created
   + resource "aws_route_table" "web-public-rt" {
       + id               = (known after apply)
@@ -134,48 +126,32 @@ Terraform will perform the following actions:
       + vpc_id           = (known after apply)
     }
 
-  # aws_route_table_association.web-public-rt will be created
-  + resource "aws_route_table_association" "web-public-rt" {
-      + id             = (known after apply)
-      + route_table_id = (known after apply)
-      + subnet_id      = (known after apply)
-    }
-
-  # aws_security_group.sgprivate will be created
-  + resource "aws_security_group" "sgprivate" {
-      + arn                    = (known after apply)
-      + description            = "Allow traffic from public subnet"
-      + egress                 = (known after apply)
-      + id                     = (known after apply)
-      + ingress                = [
-          + {
-              + cidr_blocks      = [
-                  + "10.0.1.0/24",
-                ]
-              + description      = ""
-              + from_port        = 22
-              + ipv6_cidr_blocks = []
-              + prefix_list_ids  = []
-              + protocol         = "tcp"
-              + security_groups  = []
-              + self             = false
-              + to_port          = 22
-            },
-        ]
-      + name                   = "sg_test_web"
-      + owner_id               = (known after apply)
-      + revoke_rules_on_delete = false
-      + tags                   = {
-          + "Name" = "Private_subnet_SG"
-        }
-      + vpc_id                 = (known after apply)
+  # aws_route_table_association.web-public-rt must be replaced
+-/+ resource "aws_route_table_association" "web-public-rt" {
+      ~ id             = "rtbassoc-09bca0042888d4923" -> (known after apply)
+      ~ route_table_id = "rtb-0879a66f671739bfb" -> (known after apply)
+      ~ subnet_id      = "subnet-0b64fe9e20825029c" -> (known after apply) # forces replacement
     }
 
   # aws_security_group.sgweb will be created
   + resource "aws_security_group" "sgweb" {
       + arn                    = (known after apply)
       + description            = "Allow incoming HTTP connections & SSH access"
-      + egress                 = (known after apply)
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = ""
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+            },
+        ]
       + id                     = (known after apply)
       + ingress                = [
           + {
@@ -214,29 +190,11 @@ Terraform will perform the following actions:
       + vpc_id                 = (known after apply)
     }
 
-  # aws_subnet.private-subnet will be created
-  + resource "aws_subnet" "private-subnet" {
-      + arn                             = (known after apply)
-      + assign_ipv6_address_on_creation = false
-      + availability_zone               = "ap-southeast-1b"
-      + availability_zone_id            = (known after apply)
-      + cidr_block                      = "10.0.2.0/24"
-      + id                              = (known after apply)
-      + ipv6_cidr_block                 = (known after apply)
-      + ipv6_cidr_block_association_id  = (known after apply)
-      + map_public_ip_on_launch         = false
-      + owner_id                        = (known after apply)
-      + tags                            = {
-          + "Name" = "sub_private_subnet"
-        }
-      + vpc_id                          = (known after apply)
-    }
-
   # aws_subnet.public-subnet will be created
   + resource "aws_subnet" "public-subnet" {
       + arn                             = (known after apply)
       + assign_ipv6_address_on_creation = false
-      + availability_zone               = "ap-southeast-1a"
+      + availability_zone               = "us-east-1a"
       + availability_zone_id            = (known after apply)
       + cidr_block                      = "10.0.1.0/24"
       + id                              = (known after apply)
@@ -274,7 +232,7 @@ Terraform will perform the following actions:
         }
     }
 
-Plan: 10 to add, 0 to change, 0 to destroy.
+Plan: 7 to add, 0 to change, 1 to destroy.
 
 Warning: Interpolation-only expressions are deprecated
 
@@ -291,5 +249,289 @@ expressions when the template includes multiple interpolation sequences or a
 mixture of literal strings and interpolations. This deprecation applies only
 to templates that consist entirely of a single interpolation sequence.
 
-(and 17 more similar warnings elsewhere)
+(and 14 more similar warnings elsewhere)
 
+
+------------------------------------------------------------------------
+
+Note: You didn't specify an "-out" parameter to save this plan, so Terraform
+can't guarantee that exactly these actions will be performed if
+"terraform apply" is subsequently run.
+
+
+C:\Users\rakesh\Desktop\challenge\challenge2\terraform_excercise>terraform apply
+aws_key_pair.default: Refreshing state... [id=kp_devops]
+aws_subnet.private-subnet: Refreshing state... [id=subnet-0460351d3cc7d5503]
+aws_vpc.default: Refreshing state... [id=vpc-044b913d299d9e386]
+aws_internet_gateway.gw: Refreshing state... [id=igw-0956bbad493fbfacb]
+aws_subnet.public-subnet: Refreshing state... [id=subnet-0b64fe9e20825029c]
+aws_security_group.sgweb: Refreshing state... [id=sg-0a4c0b29b68b4d1a1]
+aws_instance.wb: Refreshing state... [id=i-037fa9e2f7b25cb3a]
+aws_route_table.web-public-rt: Refreshing state... [id=rtb-0879a66f671739bfb]
+aws_route_table_association.web-public-rt: Refreshing state... [id=rtbassoc-09bca0042888d4923]
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  + create
+-/+ destroy and then create replacement
+
+Terraform will perform the following actions:
+
+  # aws_instance.wb will be created
+  + resource "aws_instance" "wb" {
+      + ami                          = "ami-062f7200baf2fa504"
+      + arn                          = (known after apply)
+      + associate_public_ip_address  = true
+      + availability_zone            = (known after apply)
+      + cpu_core_count               = (known after apply)
+      + cpu_threads_per_core         = (known after apply)
+      + get_password_data            = false
+      + host_id                      = (known after apply)
+      + id                           = (known after apply)
+      + instance_state               = (known after apply)
+      + instance_type                = "t2.micro"
+      + ipv6_address_count           = (known after apply)
+      + ipv6_addresses               = (known after apply)
+      + key_name                     = "kp_devops"
+      + network_interface_id         = (known after apply)
+      + password_data                = (known after apply)
+      + placement_group              = (known after apply)
+      + primary_network_interface_id = (known after apply)
+      + private_dns                  = (known after apply)
+      + private_ip                   = (known after apply)
+      + public_dns                   = (known after apply)
+      + public_ip                    = (known after apply)
+      + security_groups              = (known after apply)
+      + source_dest_check            = true
+      + subnet_id                    = (known after apply)
+      + tags                         = {
+          + "Name" = "ec2_devops"
+        }
+      + tenancy                      = (known after apply)
+      + user_data                    = "c9138e1cc65e979e86a759d0b3116584fb6bf94b"
+      + volume_tags                  = (known after apply)
+      + vpc_security_group_ids       = (known after apply)
+
+      + ebs_block_device {
+          + delete_on_termination = (known after apply)
+          + device_name           = (known after apply)
+          + encrypted             = (known after apply)
+          + iops                  = (known after apply)
+          + kms_key_id            = (known after apply)
+          + snapshot_id           = (known after apply)
+          + volume_id             = (known after apply)
+          + volume_size           = (known after apply)
+          + volume_type           = (known after apply)
+        }
+
+      + ephemeral_block_device {
+          + device_name  = (known after apply)
+          + no_device    = (known after apply)
+          + virtual_name = (known after apply)
+        }
+
+      + network_interface {
+          + delete_on_termination = (known after apply)
+          + device_index          = (known after apply)
+          + network_interface_id  = (known after apply)
+        }
+
+      + root_block_device {
+          + delete_on_termination = (known after apply)
+          + encrypted             = (known after apply)
+          + iops                  = (known after apply)
+          + kms_key_id            = (known after apply)
+          + volume_id             = (known after apply)
+          + volume_size           = (known after apply)
+          + volume_type           = (known after apply)
+        }
+    }
+
+  # aws_internet_gateway.gw will be created
+  + resource "aws_internet_gateway" "gw" {
+      + id       = (known after apply)
+      + owner_id = (known after apply)
+      + tags     = {
+          + "Name" = "vpc_devops_IGW"
+        }
+      + vpc_id   = (known after apply)
+    }
+
+  # aws_route_table.web-public-rt will be created
+  + resource "aws_route_table" "web-public-rt" {
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + route            = [
+          + {
+              + cidr_block                = "0.0.0.0/0"
+              + egress_only_gateway_id    = ""
+              + gateway_id                = (known after apply)
+              + instance_id               = ""
+              + ipv6_cidr_block           = ""
+              + nat_gateway_id            = ""
+              + network_interface_id      = ""
+              + transit_gateway_id        = ""
+              + vpc_peering_connection_id = ""
+            },
+        ]
+      + tags             = {
+          + "Name" = "Public Subnet RT"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # aws_route_table_association.web-public-rt must be replaced
+-/+ resource "aws_route_table_association" "web-public-rt" {
+      ~ id             = "rtbassoc-09bca0042888d4923" -> (known after apply)
+      ~ route_table_id = "rtb-0879a66f671739bfb" -> (known after apply)
+      ~ subnet_id      = "subnet-0b64fe9e20825029c" -> (known after apply) # forces replacement
+    }
+
+  # aws_security_group.sgweb will be created
+  + resource "aws_security_group" "sgweb" {
+      + arn                    = (known after apply)
+      + description            = "Allow incoming HTTP connections & SSH access"
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = ""
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = ""
+              + from_port        = 22
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 22
+            },
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = ""
+              + from_port        = 80
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 80
+            },
+        ]
+      + name                   = "sg_devops"
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Name" = "public_subnet_SG"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # aws_subnet.public-subnet will be created
+  + resource "aws_subnet" "public-subnet" {
+      + arn                             = (known after apply)
+      + assign_ipv6_address_on_creation = false
+      + availability_zone               = "us-east-1a"
+      + availability_zone_id            = (known after apply)
+      + cidr_block                      = "10.0.1.0/24"
+      + id                              = (known after apply)
+      + ipv6_cidr_block                 = (known after apply)
+      + ipv6_cidr_block_association_id  = (known after apply)
+      + map_public_ip_on_launch         = false
+      + owner_id                        = (known after apply)
+      + tags                            = {
+          + "Name" = "sub_public_subnet"
+        }
+      + vpc_id                          = (known after apply)
+    }
+
+  # aws_vpc.default will be created
+  + resource "aws_vpc" "default" {
+      + arn                              = (known after apply)
+      + assign_generated_ipv6_cidr_block = false
+      + cidr_block                       = "10.0.0.0/16"
+      + default_network_acl_id           = (known after apply)
+      + default_route_table_id           = (known after apply)
+      + default_security_group_id        = (known after apply)
+      + dhcp_options_id                  = (known after apply)
+      + enable_classiclink               = (known after apply)
+      + enable_classiclink_dns_support   = (known after apply)
+      + enable_dns_hostnames             = true
+      + enable_dns_support               = true
+      + id                               = (known after apply)
+      + instance_tenancy                 = "default"
+      + ipv6_association_id              = (known after apply)
+      + ipv6_cidr_block                  = (known after apply)
+      + main_route_table_id              = (known after apply)
+      + owner_id                         = (known after apply)
+      + tags                             = {
+          + "Name" = "vpc_devops"
+        }
+    }
+
+Plan: 7 to add, 0 to change, 1 to destroy.
+
+
+Warning: Interpolation-only expressions are deprecated
+
+  on provider.tf line 3, in provider "aws":
+   3:   region = "${var.aws_region}"
+
+Terraform 0.11 and earlier required all non-constant expressions to be
+provided via interpolation syntax, but this pattern is now deprecated. To
+silence this warning, remove the "${ sequence from the start and the }"
+sequence from the end of this expression, leaving just the inner expression.
+
+Template interpolation syntax is still used to construct strings from
+expressions when the template includes multiple interpolation sequences or a
+mixture of literal strings and interpolations. This deprecation applies only
+to templates that consist entirely of a single interpolation sequence.
+
+(and 14 more similar warnings elsewhere)
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+aws_route_table_association.web-public-rt: Destroying... [id=rtbassoc-09bca0042888d4923]
+aws_vpc.default: Creating...
+aws_route_table_association.web-public-rt: Destruction complete after 1s
+aws_vpc.default: Still creating... [10s elapsed]
+aws_vpc.default: Creation complete after 16s [id=vpc-0d8912e48fd9667c8]
+aws_internet_gateway.gw: Creating...
+aws_subnet.public-subnet: Creating...
+aws_security_group.sgweb: Creating...
+aws_subnet.public-subnet: Creation complete after 5s [id=subnet-08005339d802057a5]
+aws_internet_gateway.gw: Creation complete after 7s [id=igw-0665456a7fb1c7241]
+aws_route_table.web-public-rt: Creating...
+aws_security_group.sgweb: Still creating... [10s elapsed]
+aws_security_group.sgweb: Creation complete after 12s [id=sg-0121f18f67547dcf1]
+aws_instance.wb: Creating...
+aws_route_table.web-public-rt: Creation complete after 6s [id=rtb-074125b1ca144b1c2]
+aws_route_table_association.web-public-rt: Creating...
+aws_route_table_association.web-public-rt: Creation complete after 2s [id=rtbassoc-061a1d32241f8d55c]
+aws_instance.wb: Still creating... [10s elapsed]
+aws_instance.wb: Still creating... [20s elapsed]
+aws_instance.wb: Still creating... [30s elapsed]
+aws_instance.wb: Still creating... [40s elapsed]
+aws_instance.wb: Creation complete after 47s [id=i-0b095ceae380a2583]

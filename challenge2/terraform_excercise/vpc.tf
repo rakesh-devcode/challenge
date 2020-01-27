@@ -12,23 +12,13 @@ resource "aws_vpc" "default" {
 resource "aws_subnet" "public-subnet" {
   vpc_id = "${aws_vpc.default.id}"
   cidr_block = "${var.public_subnet_cidr}"
-  availability_zone = "ap-southeast-1a"
+  availability_zone = "us-east-1a"
 
   tags = {
     Name = "sub_public_subnet"
   }
 }
 
-# Define the private subnet
-resource "aws_subnet" "private-subnet" {
-  vpc_id = "${aws_vpc.default.id}"
-  cidr_block = "${var.private_subnet_cidr}"
-  availability_zone = "ap-southeast-1b"
-
-  tags = {
-    Name = "sub_private_subnet"
-  }
-}
 
 # Define the internet gateway
 resource "aws_internet_gateway" "gw" {
@@ -77,29 +67,17 @@ resource "aws_security_group" "sgweb" {
     protocol = "tcp"
     cidr_blocks =  ["0.0.0.0/0"]
   }
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
+	
+  }
 
   vpc_id="${aws_vpc.default.id}"
 
   tags = {
     Name = "public_subnet_SG"
-  }
-}
-
-# Define the security group for private subnet
-resource "aws_security_group" "sgprivate"{
-  name = "sg_test_web"
-  description = "Allow traffic from public subnet"
-
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["${var.public_subnet_cidr}"]
-  }
-
-  vpc_id = "${aws_vpc.default.id}"
-
-  tags = {
-    Name = "Private_subnet_SG"
   }
 }
