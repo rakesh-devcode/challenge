@@ -1,0 +1,85 @@
+-
+  name: This is my software installation playbook
+  hosts: localhost
+  connection: local
+  become: yes
+  become_method: sudo
+  vars:
+    - tomcat_url: https://www-eu.apache.org/dist/tomcat/tomcat-8/v8.5.50/bin/apache-tomcat-8.5.50.tar.gz
+    - tomcat_package: apache-tomcat-8.5.50
+    - mysql_url: http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+    - mysql_package: mysql-community-release-el7-5.noarch.rpm
+
+
+
+  tasks:
+
+  - name: install apache on Amazon linux
+    yum: name=httpd state=present
+
+  - name: Install Java
+    yum:
+      name: java
+      state: latest
+
+  - name: download tomcat server package
+    get_url:
+      url: "{{ tomcat_url }}"
+      dest: /usr/local
+
+  - name: extract tomcat packages
+    unarchive:
+      src: /usr/local/{{ tomcat_package }}.tar.gz
+      dest: /usr/local
+
+  - name: start tomcat services
+    shell: nohup /usr/local/{{ tomcat_package }}/bin/startup.sh
+
+  - name: Download MySQL
+    get_url:
+      url: "{{ mysql_url }}"
+      dest: /usr/local
+
+  - name: check MySQL package
+    yum:
+      name: /usr/local/{{ mysql_package }}
+      state: present
+
+  - name: Install MySQL
+    yum: name=mysql-server state=installed
+
+  - name: enable apache on startup
+    service: name=httpd enabled=yes state=started
+
+  - name: Install telnet
+    yum:
+      name: telnet-server,telnet
+
+  - name: Install curl
+    yum:
+      name: curl
+
+  - name: Install NSlookup
+    yum:
+      name: bind-utils
+
+  - name: Install firewalld
+    yum:
+      name: firewalld
+
+  - name: Disabling firewalls on port 3306
+    firewalld:
+        port: 3306/tcp
+        permanent: yes
+        state: enabled
+  - name: Disabling firewalls on port 80
+    firewalld:
+        port: 80/tcp
+        permanent: yes
+        state: enabled
+  - name: Disabling firewalls on port 8080
+    firewalld:
+        port: 8080/tcp
+        permanent: yes
+        state: enabled
+
