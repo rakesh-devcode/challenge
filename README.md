@@ -20,6 +20,10 @@ C:/Users/user1/Desktop/challenge/challenge1/somedir2/anotherdir/yet_another_dir/
 C:/Users/user1/Desktop/challenge/challenge1/somedir3/another_file.js
 ________________________________________
 # challenge 2:
-How to do AWS infrastructure automations with Terraform.
-How to use Ansible for multiple works in AWS.
-How can we start and use Kubernetes.
+1. How to do AWS infrastructure automations with Terraform?
+
+2. How to use Ansible for multiple works in AWS?
+
+3. How can we start and use Kubernetes?
+
+Please go through README.md files for all sections.
